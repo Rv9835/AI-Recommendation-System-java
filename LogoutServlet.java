@@ -20,7 +20,7 @@ public class LogoutServlet extends HttpServlet {
      */
     public LogoutServlet() {
         super();
-        // TODO Auto-generated constructor stub
+		// constructor
     }
 
 	/**
@@ -38,7 +38,7 @@ public class LogoutServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		// no-op
 	}
 
 }

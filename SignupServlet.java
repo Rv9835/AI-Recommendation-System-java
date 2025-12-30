@@ -26,7 +26,7 @@ public class SignupServlet extends HttpServlet {
      */
     public SignupServlet() {
         super();
-        // TODO Auto-generated constructor stub
+		// constructor
     }
 
 
@@ -56,10 +56,10 @@ public class SignupServlet extends HttpServlet {
 			RpcHelper.writeJsonObject(response, result);
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			util.ErrorHandler.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Malformed JSON");
 		} finally {
 			// close the connection
-			db.cleanUp();
+			try { db.cleanUp(); } catch (Exception ignore) {}
 		}
 	}
 

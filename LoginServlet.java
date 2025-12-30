@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
      */
     public LoginServlet() {
         super();
-        // TODO Auto-generated constructor stub
+		// constructor
     }
 
 	/**
@@ -55,10 +55,10 @@ public class LoginServlet extends HttpServlet {
 			
 			RpcHelper.writeJsonObject(response, result);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			util.ErrorHandler.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Malformed JSON");
 		} finally {
 			// close the connection
-			db.cleanUp();
+			try { db.cleanUp(); } catch (Exception ignore) {}
 		}
 	}
 
@@ -93,10 +93,10 @@ public class LoginServlet extends HttpServlet {
 			RpcHelper.writeJsonObject(response, result);
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			util.ErrorHandler.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Malformed JSON");
 		} finally {
 			// close the connection
-			db.cleanUp();
+			try { db.cleanUp(); } catch (Exception ignore) {}
 		}
 	}
 

@@ -31,7 +31,7 @@ public class HistoryServlet extends HttpServlet {
      */
     public HistoryServlet() {
         super();
-        // TODO Auto-generated constructor stub
+		// constructor
     }
 
 	/**
@@ -51,9 +51,9 @@ public class HistoryServlet extends HttpServlet {
 			}
 			RpcHelper.writeJsonArray(response, array);
 		} catch (JSONException e) {
-			e.printStackTrace();
+			util.ErrorHandler.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Malformed JSON");
 		} finally {
-			db.cleanUp();
+			try { db.cleanUp(); } catch (Exception ignore) {}
 		}
 
 	}
@@ -69,7 +69,7 @@ public class HistoryServlet extends HttpServlet {
 			String userId = obj.getString("user_id");
 			// obtain favorite event ids
 			JSONArray favorites = obj.getJSONArray("favorite");
-			System.out.println(obj.toString());
+			// logged by servlet infrastructure in production; omit noisy prints here
 			List<String> eventIds = new ArrayList<>();
 			for (int i = 0; i < favorites.length(); i++) {
 				eventIds.add(favorites.getString(i));	
@@ -80,10 +80,9 @@ public class HistoryServlet extends HttpServlet {
 			RpcHelper.writeJsonObject(response, new JSONObject().put("status", "OK"));
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			util.ErrorHandler.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Malformed JSON");
 		} finally {
-			// close the connection
-			db.cleanUp();
+			try { db.cleanUp(); } catch (Exception ignore) {}
 		}
 	}
 
@@ -107,10 +106,9 @@ public class HistoryServlet extends HttpServlet {
 			RpcHelper.writeJsonObject(response, new JSONObject().put("status", "OK"));
 			
 		} catch (JSONException e) {
-			e.printStackTrace();
+			util.ErrorHandler.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, "Malformed JSON");
 		} finally {
-			// close the connection
-			db.cleanUp();
+			try { db.cleanUp(); } catch (Exception ignore) {}
 		}
 	}
 
