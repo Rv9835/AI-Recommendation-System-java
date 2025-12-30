@@ -41,7 +41,8 @@ public class FavoriteService {
     }
 
     /**
-     * Add favorite item ids for a user.
+     * Add favorite item ids for a user. This method is a no-op when the provided
+     * list is null or empty.
      */
     public void addFavorites(String userId, List<String> itemIds) {
         if (itemIds == null || itemIds.isEmpty()) {
@@ -56,7 +57,8 @@ public class FavoriteService {
     }
 
     /**
-     * Remove favorite item ids for a user.
+     * Remove favorite item ids for a user. This method is a no-op when the
+     * provided list is null or empty.
      */
     public void removeFavorites(String userId, List<String> itemIds) {
         if (itemIds == null || itemIds.isEmpty()) {

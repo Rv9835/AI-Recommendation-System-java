@@ -8,14 +8,29 @@ import org.slf4j.Logger;
 import java.util.List;
 
 /**
- * High-level recommendation service that delegates to the content-based algorithm.
+ * High-level recommendation service that delegates to a pluggable algorithm.
  */
 public class RecommendationService {
     private static final Logger log = AppLogger.get(RecommendationService.class);
-    private final RecommendationContentBased algo = new RecommendationContentBased();
+    private final RecommendationContentBased algo;
+
+    /**
+     * Default constructor using production algorithm implementation.
+     */
+    public RecommendationService() {
+        this(new RecommendationContentBased());
+    }
+
+    /**
+     * Constructor for dependency injection (tests can pass a mocked algorithm).
+     */
+    public RecommendationService(RecommendationContentBased algo) {
+        this.algo = algo != null ? algo : new RecommendationContentBased();
+    }
 
     /**
      * Produce recommendations for a user near a given location.
+     *
      * @param userId user identifier
      * @param lat latitude
      * @param lon longitude

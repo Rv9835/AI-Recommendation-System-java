@@ -5,18 +5,48 @@ import db.DBConnectionFactory;
 import entity.Item;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Supplier;
 
+/**
+ * Content-based recommendation algorithm.
+ * <p>
+ * This implementation consults the database for a user's favorites and then
+ * searches for items in the most frequent categories. For testability the
+ * {@link Supplier}&lt;DBConnection&gt; can be injected.
+ */
 public class RecommendationContentBased {
+    private final Supplier<DBConnection> provider;
 
+    /**
+     * Production constructor using the default DBConnection provider.
+     */
+    public RecommendationContentBased() {
+        this(DBConnectionFactory::getConnection);
+    }
+
+    /**
+     * Testable constructor that accepts a DBConnection supplier.
+     */
+    public RecommendationContentBased(Supplier<DBConnection> provider) {
+        this.provider = provider != null ? provider : DBConnectionFactory::getConnection;
+    }
+
+    /**
+     * Recommend items for a user near a location.
+     *
+     * @param userId user identifier
+     * @param lat latitude
+     * @param lon longitude
+     * @return list of recommended items (may be empty)
+     */
     public List<Item> recommend(String userId, double lat, double lon) {
-        try (DBConnection connection = DBConnectionFactory.getConnection()) {
+        try (DBConnection connection = provider.get()) {
             Set<String> favoriteIds = connection.getFavoriteIds(userId);
 
             Map<String, Integer> categoryCounts = new HashMap<>();
