@@ -4,6 +4,7 @@ import db.DBConnection;
 import entity.Item;
 
 import java.sql.Connection;
+import javax.sql.DataSource;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,8 +28,16 @@ public class MySQLConnection implements DBConnection {
     private static final String USER = System.getenv().getOrDefault("DB_USER", "root");
     private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "root");
 
+    private final DataSource ds;
+
+    /** Production constructor which uses the shared DataSourceManager. */
     public MySQLConnection() {
-        // no-op: connections are obtained per-method from DataSourceManager
+        this(db.DataSourceManager.getDataSource());
+    }
+
+    /** Constructor that accepts a DataSource for dependency injection (useful in tests). */
+    public MySQLConnection(DataSource dataSource) {
+        this.ds = dataSource;
     }
 
     @Override
@@ -42,7 +51,7 @@ public class MySQLConnection implements DBConnection {
             return;
         }
         final String sql = "INSERT IGNORE INTO history (user_id, item_id) VALUES (?, ?)";
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             for (String itemId : itemIds) {
                 ps.setString(1, userId);
@@ -61,7 +70,7 @@ public class MySQLConnection implements DBConnection {
             return;
         }
         final String sql = "DELETE FROM history WHERE user_id = ? AND item_id = ?";
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             for (String itemId : itemIds) {
                 ps.setString(1, userId);
@@ -78,7 +87,7 @@ public class MySQLConnection implements DBConnection {
     public Set<String> getFavoriteIds(String userId) {
         final String sql = "SELECT item_id FROM history WHERE user_id = ?";
         Set<String> ids = new HashSet<>();
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -136,7 +145,7 @@ public class MySQLConnection implements DBConnection {
         }
         sql.append(" LIMIT 50");
 
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
@@ -160,7 +169,7 @@ public class MySQLConnection implements DBConnection {
         }
         final String sql = "INSERT INTO items (id, name, address, image_url, url, lat, lon, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?) "
                 + "ON DUPLICATE KEY UPDATE name = VALUES(name), address = VALUES(address), image_url = VALUES(image_url), url = VALUES(url), lat = VALUES(lat), lon = VALUES(lon), description = VALUES(description)";
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection()) {
+        try (java.sql.Connection c = ds.getConnection()) {
             try {
                 c.setAutoCommit(false);
                 try (PreparedStatement ps = c.prepareStatement(sql)) {
@@ -188,7 +197,7 @@ public class MySQLConnection implements DBConnection {
     @Override
     public String getUserName(String userId) {
         final String sql = "SELECT first_name, last_name FROM users WHERE user_id = ?";
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -205,7 +214,7 @@ public class MySQLConnection implements DBConnection {
     @Override
     public boolean verifyLogin(String userId, String password) {
         final String sql = "SELECT password FROM users WHERE user_id = ?";
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -224,7 +233,7 @@ public class MySQLConnection implements DBConnection {
     public boolean registerUser(String userId, String password, String firstName, String lastName) {
         final String sql = "INSERT INTO users (user_id, password, first_name, last_name) VALUES (?, ?, ?, ?)";
         final String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, userId);
             ps.setString(2, hashed);
@@ -239,7 +248,7 @@ public class MySQLConnection implements DBConnection {
 
     private Item getItemById(String itemId) {
         final String sql = "SELECT * FROM items WHERE id = ?";
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, itemId);
             try (ResultSet rs = ps.executeQuery()) {
