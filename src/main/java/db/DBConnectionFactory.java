@@ -1,6 +1,7 @@
 package db;
 
 import db.mysql.MySQLConnection;
+import javax.sql.DataSource;
 
 /**
  * Factory for obtaining `DBConnection` instances. Production code uses the default
@@ -15,6 +16,16 @@ public class DBConnectionFactory {
 
     public static void setProviderForTests(java.util.function.Supplier<DBConnection> p) {
         provider = p;
+    }
+
+    /**
+     * Convenience helper for tests: set a {@link DataSource} to be used when
+     * creating {@link DBConnection} instances. This will configure the provider
+     * to return a {@link db.mysql.MySQLConnection} backed by the supplied
+     * DataSource.
+     */
+    public static void setDataSourceForTests(DataSource ds) {
+        provider = () -> new MySQLConnection(ds);
     }
 
     public static void resetProvider() {
