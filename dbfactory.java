@@ -1,5 +1,11 @@
   
 package db;
+package internal.obsolete;
+
+/**
+ * Legacy placeholder for DB factory.
+ */
+public final class DBFactoryLegacy { private DBFactoryLegacy() {} }
 
 import db.mysql.MySQLConnection;
 public class DBConnectionFactory {
