@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.mindrot.jbcrypt.BCrypt;
+import util.AppLogger;
+import org.slf4j.Logger;
 
 /**
  * MySQL-backed implementation of {@link db.DBConnection} using HikariCP for pooling.
@@ -23,7 +25,8 @@ import org.mindrot.jbcrypt.BCrypt;
  * {@link db.DataAccessException}.
  */
 public class MySQLConnection implements DBConnection {
-
+    
+    private static final Logger log = AppLogger.get(MySQLConnection.class);
     private static final String URL = System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/recommendation?serverTimezone=UTC&useSSL=false");
     private static final String USER = System.getenv().getOrDefault("DB_USER", "root");
     private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "root");
@@ -134,7 +137,7 @@ public class MySQLConnection implements DBConnection {
     public Set<String> getCategories(String itemId) {
         final String sql = "SELECT category FROM item_categories WHERE item_id = ?";
         Set<String> categories = new HashSet<>();
-        try (java.sql.Connection c = db.DataSourceManager.getDataSource().getConnection();
+        try (java.sql.Connection c = this.ds.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, itemId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -143,6 +146,7 @@ public class MySQLConnection implements DBConnection {
                 }
             }
         } catch (SQLException e) {
+            log.error("Failed to load categories for item {}", itemId, e);
             throw new db.DataAccessException("Failed to load categories", e);
         }
         return categories;
@@ -202,12 +206,20 @@ public class MySQLConnection implements DBConnection {
                 saveCategories(c, item);
                 c.commit();
             } catch (SQLException e) {
-                try { c.rollback(); } catch (SQLException ex) {}
+                try {
+                    c.rollback();
+                } catch (SQLException ex) {
+                    log.error("Rollback failed while saving item {}", item == null ? "<null>" : item.getId(), ex);
+                }
+                log.error("Failed to save item {}", item == null ? "<null>" : item.getId(), e);
                 throw new db.DataAccessException("Failed to save item", e);
             } finally {
-                try { c.setAutoCommit(true); } catch (SQLException e) {}
+                try { c.setAutoCommit(true); } catch (SQLException ex) {
+                    log.warn("Failed to reset autoCommit after saveItem", ex);
+                }
             }
         } catch (SQLException e) {
+            log.error("Failed to obtain connection for saveItem", e);
             throw new db.DataAccessException("Failed to save item", e);
         }
     @Override
