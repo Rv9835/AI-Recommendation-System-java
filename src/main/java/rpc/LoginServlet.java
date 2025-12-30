@@ -17,7 +17,19 @@ import org.json.JSONObject;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final AuthService authService = new AuthService();
+    private final AuthService authService;
+
+    /** Default constructor used by the servlet container. */
+    public LoginServlet() {
+        this(new AuthService());
+    }
+
+    /**
+     * Constructor for tests to inject a custom AuthService.
+     */
+    LoginServlet(AuthService authService) {
+        this.authService = authService != null ? authService : new AuthService();
+    }
 
     /**
      * Servlet handling login checks and authentication.

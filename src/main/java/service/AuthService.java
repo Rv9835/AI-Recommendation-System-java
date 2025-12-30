@@ -30,10 +30,17 @@ public class AuthService {
     }
 
     /**
-     * Attempt to authenticate a user.
-     * @param userId user identifier
-     * @param password raw password to verify
-     * @return LoginResult containing success flag and display name
+        * Attempt to authenticate a user.
+        *
+        * This method enforces an in-memory throttling policy to limit brute-force
+        * attempts. On repeated failures within the configured time window a
+        * {@link TooManyAttemptsException} is thrown.
+        *
+        * @param userId user identifier
+        * @param password raw password to verify
+        * @return LoginResult containing success flag and display name
+        * @throws TooManyAttemptsException when the client exceeded allowed attempts
+        * @throws ServiceException on unexpected errors
      */
     public LoginResult login(String userId, String password) {
         // throttling
@@ -72,8 +79,14 @@ public class AuthService {
     }
 
     /**
-     * Register a new user record.
-     * @return true on success
+        * Register a new user record.
+        *
+        * @param userId desired user id
+        * @param password plaintext password
+        * @param firstName optional first name
+        * @param lastName optional last name
+        * @return true on success
+        * @throws ServiceException on unexpected errors
      */
     public boolean register(String userId, String password, String firstName, String lastName) {
         try (DBConnection conn = provider.get()) {

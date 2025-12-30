@@ -16,7 +16,19 @@ import org.json.JSONObject;
 @WebServlet("/register")
 public class SignupServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final AuthService authService = new AuthService();
+    private final AuthService authService;
+
+    /** Default constructor used by the servlet container. */
+    public SignupServlet() {
+        this(new AuthService());
+    }
+
+    /**
+     * Constructor for tests to inject a custom AuthService.
+     */
+    SignupServlet(AuthService authService) {
+        this.authService = authService != null ? authService : new AuthService();
+    }
 
     /**
      * Servlet for user registration. Expects JSON body with `user_id`, `password`,

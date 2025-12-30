@@ -21,7 +21,19 @@ import org.json.JSONObject;
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private final FavoriteService favoriteService = new FavoriteService();
+    private final FavoriteService favoriteService;
+
+    /** Default constructor used by the servlet container. */
+    public HistoryServlet() {
+        this(new FavoriteService());
+    }
+
+    /**
+     * Constructor for tests to inject a custom FavoriteService.
+     */
+    HistoryServlet(FavoriteService favoriteService) {
+        this.favoriteService = favoriteService != null ? favoriteService : new FavoriteService();
+    }
 
     /**
      * Servlet to manage user favorite items. GET returns favorites; POST adds; DELETE removes.
