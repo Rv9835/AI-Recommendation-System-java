@@ -1,0 +1,11 @@
+chore: tighten Checkstyle, add Javadoc, tests, DI and CI improvements
+
+- Tighten Checkstyle to require public Javadoc for types and methods
+- Add Javadoc to public services, DAOs, servlets and utilities
+- Refactor MySQLConnection to use short-lived Connections (try-with-resources)
+- Add H2 unit tests and Testcontainers integration test for DAOs
+- Add service unit tests using DI-friendly constructors
+- Split CI jobs into unit and integration (PR-only) runs
+- Add JaCoCo, Checkstyle, SpotBugs and PMD configurations
+
+This commit readies the project for Review 1/2 by improving code quality, tests, and documentation.
