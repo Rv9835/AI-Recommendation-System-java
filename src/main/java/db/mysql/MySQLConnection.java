@@ -30,12 +30,28 @@ public class MySQLConnection implements DBConnection {
 
     private final DataSource ds;
 
-    /** Production constructor which uses the shared DataSourceManager. */
+    /**
+     * Production constructor which uses the shared {@link db.DataSourceManager}.
+     * <p>
+     * This constructor obtains the application's pooled {@link javax.sql.DataSource}
+     * from {@link db.DataSourceManager#getDataSource()} and delegates to the
+     * {@link #MySQLConnection(javax.sql.DataSource)} constructor. Prefer this
+     * constructor for runtime use; tests should use the DataSource-accepting
+     * constructor or {@link db.DBConnectionFactory#setDataSourceForTests} to inject
+     * an in-memory DataSource.
+     */
     public MySQLConnection() {
         this(db.DataSourceManager.getDataSource());
     }
 
-    /** Constructor that accepts a DataSource for dependency injection (useful in tests). */
+    /**
+     * Constructor that accepts a {@link javax.sql.DataSource} for dependency
+     * injection.
+     *
+     * @param dataSource the DataSource to use for obtaining Connections. Must
+     *                   not be null; callers (tests) may provide an in-memory
+     *                   H2 DataSource or a Hikari-configured DataSource.
+     */
     public MySQLConnection(DataSource dataSource) {
         this.ds = dataSource;
     }
