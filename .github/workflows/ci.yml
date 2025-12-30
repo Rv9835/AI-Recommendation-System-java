@@ -23,8 +23,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Run unit tests
-        run: mvn -B -DskipITs=true test
+      - name: Run build, tests and static analysis
+        run: mvn -B -DskipITs=true verify
 
   integration-tests:
     if: github.event_name == 'pull_request'
