@@ -12,25 +12,33 @@ public class MySQLConnectionH2Test {
     public static void cleanup() {
         try {
             db.DataSourceManager.close();
+            db.DBConnectionFactory.resetProvider();
         } catch (Exception ignore) {}
     }
 
     @Test
     public void h2_inMemory_smokeTest() throws Exception {
-        // configure H2 in-memory DB
+        // configure H2 in-memory DB and a DataSource for tests
         String url = "jdbc:h2:mem:recommendation;DB_CLOSE_DELAY=-1";
-        System.setProperty("DB_URL", url);
-        System.setProperty("DB_USER", "sa");
-        System.setProperty("DB_PASSWORD", "");
+        String user = "sa";
+        String pass = "";
 
-        // run flyway migrations against H2
-        Flyway flyway = Flyway.configure()
-                .dataSource(url, "sa", "")
-                .locations("classpath:db/migration")
-                .load();
+        // Create an Hikari DataSource for tests
+        com.zaxxer.hikari.HikariConfig cfg = new com.zaxxer.hikari.HikariConfig();
+        cfg.setJdbcUrl(url);
+        cfg.setUsername(user);
+        cfg.setPassword(pass);
+        cfg.setMaximumPoolSize(2);
+        com.zaxxer.hikari.HikariDataSource ds = new com.zaxxer.hikari.HikariDataSource(cfg);
+
+        // Run Flyway against the H2 DataSource
+        Flyway flyway = Flyway.configure().dataSource(ds).locations("classpath:db/migration").load();
         flyway.migrate();
 
-        MySQLConnection conn = new MySQLConnection();
+        // Tell factory to use this DataSource for DBConnection instances
+        db.DBConnectionFactory.setDataSourceForTests(ds);
+
+        db.DBConnection conn = db.DBConnectionFactory.getConnection();
         try {
             boolean ok = conn.registerUser("h2_user", "password1", "H2", "User");
             assertTrue(ok);
@@ -59,6 +67,7 @@ public class MySQLConnectionH2Test {
             assertTrue(favs.contains("h2item"));
         } finally {
             conn.close();
+            try { ds.close(); } catch (Exception ignore) {}
         }
     }
 }
