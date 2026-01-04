@@ -80,10 +80,14 @@ public class LoginServlet extends HttpServlet {
                 session = request.getSession(true);
                 session.setAttribute("user_id", userId);
                 session.setMaxInactiveInterval(600);
-                // generate CSRF token and expose via cookie
+                // generate CSRF token and expose via cookie; include Secure when connection is TLS
                 String csrf = util.CsrfUtil.generateToken();
                 util.CsrfUtil.setToken(session, csrf);
-                response.setHeader("Set-Cookie", "XSRF-TOKEN=" + csrf + "; Path=/; SameSite=Strict");
+                String xsrfCookie = "XSRF-TOKEN=" + csrf + "; Path=/; SameSite=Strict";
+                if (request.isSecure()) {
+                    xsrfCookie += "; Secure";
+                }
+                response.addHeader("Set-Cookie", xsrfCookie);
                 result.put("status", "OK").put("user_id", userId).put("name", r.displayName());
                 RpcHelper.writeJsonObject(response, result, HttpServletResponse.SC_OK);
             } else {

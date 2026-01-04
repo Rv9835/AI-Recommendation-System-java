@@ -51,8 +51,12 @@ public class SecurityFilter implements Filter {
                 token = util.CsrfUtil.generateToken();
                 util.CsrfUtil.setToken(request.getSession(false), token);
             }
-            // expose token to JS via cookie
-            response.setHeader("Set-Cookie", "XSRF-TOKEN=" + token + "; Path=/; SameSite=Strict");
+            // expose token to JS via cookie; include Secure attribute when request is over HTTPS
+            String xsrfCookie = "XSRF-TOKEN=" + token + "; Path=/; SameSite=Strict";
+            if (request.isSecure()) {
+                xsrfCookie += "; Secure";
+            }
+            response.addHeader("Set-Cookie", xsrfCookie);
         }
 
         // Proceed with request
