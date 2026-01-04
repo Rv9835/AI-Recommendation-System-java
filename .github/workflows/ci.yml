@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Run integration tests
         env:
-          DB_URL: jdbc:mysql://localhost:3306/?user=root
-          DB_USER: root
-          DB_PASSWORD: R@nvijay
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: mvn -B -Dtest=db.mysql.MySQLConnectionIT test

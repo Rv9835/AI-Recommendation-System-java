@@ -27,7 +27,7 @@ public class EndToEndFullFlowIT {
     @AfterAll
     public static void stop() throws Exception {
         if (server != null) server.stop();
-        try { db.DataSourceManager.close(); } catch (Exception ignore) {}
+        try { db.DataSourceManager.close(); } catch (Exception e) { e.printStackTrace(); }
     }
 
     @Test

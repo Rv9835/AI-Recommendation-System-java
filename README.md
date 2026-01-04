@@ -1,5 +1,111 @@
 # AI Recommendation System (Java Servlet)
 
+This project is a Java Servlet backend for a personalized recommendation service. It follows a standard Maven webapp layout with a DAO layer (MySQL), a service layer, servlets (RPC endpoints), Flyway migrations, and automated tests (unit, integration, E2E).
+
+## Quick Facts
+- Packaging: WAR via Maven
+- Java: 11
+- Servlet API: javax.servlet-api 4.0.1
+- DB: MySQL (production), H2 (unit tests), Testcontainers (integration)
+
+## Environment & Configuration
+Set these environment variables (or configure via your CI):
+
+- `DB_URL` (default: `jdbc:mysql://localhost:3306/?user=root`)
+- `DB_USER` (default: `root`)
+- `DB_PASSWORD` (default: `R@nvijay`)
+
+Export example (macOS/Linux):
+
+```bash
+export DB_URL="jdbc:mysql://localhost:3306/?user=root"
+export DB_USER=root
+export DB_PASSWORD='R@nvijay'
+```
+
+> CI: the workflow uses repository secrets (`DB_URL`, `DB_USER`, `DB_PASSWORD`) — do not hardcode credentials in workflows.
+
+## Architecture (high level)
+
+```mermaid
+flowchart LR
+  subgraph Web
+    A[Client (SPA / JS)] -->|HTTP| B[Servlets (RPC Controllers)]
+  end
+  subgraph App
+    B --> C[Service Layer]
+    C --> D[DAO Layer (`DBConnection` / `MySQLConnection`)]
+    D --> E[(MySQL / H2)]
+  end
+  B --> F[SecurityFilter / Csrf]
+  C --> G[Recommendation Algorithm]
+
+  style E fill:#f9f,stroke:#333,stroke-width:1px
+```
+
+## Database migrations
+Flyway migrations are under `src/main/resources/db/migration`. Apply them with:
+
+```bash
+mvn flyway:migrate
+```
+
+## Build & Test
+
+Build the WAR:
+
+```bash
+mvn -B package
+```
+
+Run unit tests only (skips integration tests):
+
+```bash
+mvn -B -DskipITs=true test
+```
+
+Run full verification (static analysis + coverage):
+
+```bash
+mvn -B verify
+```
+
+Integration tests (Testcontainers) require Docker and repository secrets configured for CI tests. Locally integration tests use the Testcontainers-managed DB.
+
+## Endpoints (JSON)
+- `POST /login` — body: {"user_id":"u","password":"p"}
+- `GET /login` — session status
+- `POST /register` — body: {"user_id":"u","password":"p","first_name":"F","last_name":"L"}
+- `GET/POST/DELETE /history` — requires session; POST/DELETE body: {"favorite":["item1","item2"]}
+- `POST /logout` — invalidates session
+
+## Security & Best Practices Applied
+- Passwords hashed with BCrypt.
+- CSRF protection via `XSRF-TOKEN` cookie + `X-XSRF-TOKEN` header; enforced by `SecurityFilter`.
+- Login throttling to mitigate brute-force attempts implemented in `AuthService`.
+- Global JSON error handler with trace id via `util/ErrorHandler`.
+
+## Session Cookie Hardening
+`JSESSIONID` should be configured with `HttpOnly`, `Secure`, and `SameSite` in production. A small `ServletContextListener` (`rpc.SessionConfigListener`) is included to set `HttpOnly` and `Secure`.
+
+## Project Checklist for Submission
+1. Ensure no empty catch blocks remain and exceptions are logged/rethrown appropriately.
+2. Confirm `MySQLConnection` uses injected `DataSource` and tests set `DBConnectionFactory.setDataSourceForTests` when required.
+3. Configure repository secrets in GitHub and do not store credentials in the workflow files.
+4. Add an MVC diagram and slide with signup/login/favorite flowcharts in your presentation materials.
+5. Run `mvn -B verify` and fix any Checkstyle/SpotBugs/PMD warnings.
+
+## Files of Interest
+- `src/main/java/db/mysql/MySQLConnection.java`
+- `src/main/java/db/DBConnection.java`
+- `src/main/java/rpc/*` (servlets & filters)
+- `src/main/java/service/*`
+- `src/main/java/util/*` (RpcHelper, ErrorHandler, Validation)
+- `src/main/resources/db/migration` (Flyway migrations)
+
+If you want, I can also add a minimal Postman collection or a small frontend demo `index.html` to exercise the endpoints.
+# AI Recommendation System (Java Servlet)
+
 This project is a Java Servlet backend for a personalized search & recommendation system. The repository has been restructured to a standard Maven webapp layout with a DAO layer (MySQL), a service layer, servlets, and utility helpers.
 
 Quick status

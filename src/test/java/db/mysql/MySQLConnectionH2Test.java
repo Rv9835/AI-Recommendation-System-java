@@ -13,7 +13,9 @@ public class MySQLConnectionH2Test {
         try {
             db.DataSourceManager.close();
             db.DBConnectionFactory.resetProvider();
-        } catch (Exception ignore) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -67,7 +69,7 @@ public class MySQLConnectionH2Test {
             assertTrue(favs.contains("h2item"));
         } finally {
             conn.close();
-            try { ds.close(); } catch (Exception ignore) {}
+            try { ds.close(); } catch (Exception e) { e.printStackTrace(); }
         }
     }
 }

@@ -23,7 +23,9 @@ public class MySQLConnectionIT {
     public static void cleanup() {
         try {
             DataSourceManager.close();
-        } catch (Exception ignore) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
