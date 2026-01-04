@@ -29,7 +29,7 @@ public class MySQLConnection implements DBConnection {
     private static final Logger log = AppLogger.get(MySQLConnection.class);
     private static final String URL = System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/?user=root");
     private static final String USER = System.getenv().getOrDefault("DB_USER", "root");
-    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "R@nvijay");
+    private static final String PASSWORD = System.getenv().getOrDefault("DB_PASSWORD", "");
 
     private final DataSource ds;
 

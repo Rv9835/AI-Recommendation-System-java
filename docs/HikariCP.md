@@ -5,7 +5,7 @@ This project uses HikariCP as the JDBC connection pool via `DataSourceManager`.
 Environment variables
  - `DB_URL` — JDBC URL (default: `jdbc:mysql://localhost:3306/?user=root`)
 - `DB_USER` — DB user (default: `root`)
- - `DB_PASSWORD` — DB password (default: `R@nvijay`)
+ - `DB_PASSWORD` — DB password (default: empty; set via env or secrets)
 
 Basic tuning in `DataSourceManager`:
 - `maximumPoolSize` = 10

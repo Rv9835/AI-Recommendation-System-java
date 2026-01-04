@@ -13,14 +13,14 @@ Set these environment variables (or configure via your CI):
 
 - `DB_URL` (default: `jdbc:mysql://localhost:3306/?user=root`)
 - `DB_USER` (default: `root`)
-- `DB_PASSWORD` (default: `R@nvijay`)
+- `DB_PASSWORD` (default: empty — set via environment or CI secrets)
 
 Export example (macOS/Linux):
 
 ```bash
 export DB_URL="jdbc:mysql://localhost:3306/?user=root"
 export DB_USER=root
-export DB_PASSWORD='R@nvijay'
+export DB_PASSWORD=''
 ```
 
 > CI: the workflow uses repository secrets (`DB_URL`, `DB_USER`, `DB_PASSWORD`) — do not hardcode credentials in workflows.
@@ -125,7 +125,7 @@ export DB_PASSWORD='R@nvijay'
   user_id VARCHAR(100) PRIMARY KEY,
   password VARCHAR(255) NOT NULL,
  `DB_URL` (default: `jdbc:mysql://localhost:3306/?user=root`)
- `DB_PASSWORD` (default: `R@nvijay`)
+ `DB_PASSWORD` (default: empty — set via environment or CI secrets)
 );
 
 CREATE TABLE items (

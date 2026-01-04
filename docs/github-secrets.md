@@ -4,7 +4,7 @@ To allow CI integration tests to run without embedding credentials in workflows,
 
 - `DB_URL` — example: `jdbc:mysql://127.0.0.1:3306/recommendation?serverTimezone=UTC&useSSL=false` or your JDBC URL
 - `DB_USER` — example: `root`
-- `DB_PASSWORD` — example: `R@nvijay`
+-- `DB_PASSWORD` — example: set a secure password for CI (do NOT commit it to the repo)
 
 Steps:
 

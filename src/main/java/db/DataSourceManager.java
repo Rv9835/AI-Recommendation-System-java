@@ -22,7 +22,7 @@ public final class DataSourceManager {
                     HikariConfig cfg = new HikariConfig();
                     String url = System.getProperty("DB_URL", System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/?user=root"));
                     String user = System.getProperty("DB_USER", System.getenv().getOrDefault("DB_USER", "root"));
-                    String pass = System.getProperty("DB_PASSWORD", System.getenv().getOrDefault("DB_PASSWORD", "R@nvijay"));
+                    String pass = System.getProperty("DB_PASSWORD", System.getenv().getOrDefault("DB_PASSWORD", ""));
                     cfg.setJdbcUrl(url);
                     cfg.setUsername(user);
                     cfg.setPassword(pass);
