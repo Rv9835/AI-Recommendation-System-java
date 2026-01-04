@@ -5,7 +5,7 @@ set -euo pipefail
 # Usage: ensure you're authenticated with GitHub CLI (`gh auth login`) and run:
 #   ./scripts/push_and_pr.sh
 
-REPO_OWNER=rv9835
+REPO_OWNER=sudarshan81026
 REPO_NAME=AI-Recommendation-System-java
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 REMOTE_SSH=git@github.com:${REPO_OWNER}/${REPO_NAME}.git
