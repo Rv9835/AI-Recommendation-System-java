@@ -9,20 +9,17 @@ Quick status
 - MySQL connector included
 
 Environment / configuration
-- Set these environment variables (or adjust values in src):
-  - DB_URL (default: jdbc:mysql://localhost:3306/recommendation?serverTimezone=UTC&useSSL=false)
-  - DB_USER (default: root)
-  - DB_PASSWORD (default: root)
+  - DB_URL (default: jdbc:mysql://localhost:3306/?user=root)
 
 Database schema (minimal)
 Run these statements to create required tables (example):
-
-```
-CREATE TABLE users (
+export DB_URL="jdbc:mysql://localhost:3306/?user=root"
+export DB_USER=root
+export DB_PASSWORD='R@nvijay'
   user_id VARCHAR(100) PRIMARY KEY,
   password VARCHAR(255) NOT NULL,
-  first_name VARCHAR(100),
-  last_name VARCHAR(100)
+ `DB_URL` (default: `jdbc:mysql://localhost:3306/?user=root`)
+ `DB_PASSWORD` (default: `R@nvijay`)
 );
 
 CREATE TABLE items (

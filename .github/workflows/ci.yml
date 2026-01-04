@@ -57,7 +57,7 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Run integration tests
         env:
-          DB_URL: jdbc:mysql://127.0.0.1:3306/recommendation?serverTimezone=UTC&useSSL=false
+          DB_URL: jdbc:mysql://localhost:3306/?user=root
           DB_USER: root
-          DB_PASSWORD: root
+          DB_PASSWORD: R@nvijay
         run: mvn -B -Dtest=db.mysql.MySQLConnectionIT test

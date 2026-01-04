@@ -20,9 +20,9 @@ public final class DataSourceManager {
             synchronized (DataSourceManager.class) {
                 if (ds == null) {
                     HikariConfig cfg = new HikariConfig();
-                    String url = System.getProperty("DB_URL", System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/recommendation?serverTimezone=UTC&useSSL=false"));
+                    String url = System.getProperty("DB_URL", System.getenv().getOrDefault("DB_URL", "jdbc:mysql://localhost:3306/?user=root"));
                     String user = System.getProperty("DB_USER", System.getenv().getOrDefault("DB_USER", "root"));
-                    String pass = System.getProperty("DB_PASSWORD", System.getenv().getOrDefault("DB_PASSWORD", "root"));
+                    String pass = System.getProperty("DB_PASSWORD", System.getenv().getOrDefault("DB_PASSWORD", "R@nvijay"));
                     cfg.setJdbcUrl(url);
                     cfg.setUsername(user);
                     cfg.setPassword(pass);
