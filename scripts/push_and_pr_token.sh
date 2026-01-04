@@ -4,7 +4,7 @@ set -euo pipefail
 # Usage: export GITHUB_TOKEN="..."; ./scripts/push_and_pr_token.sh [owner] [repo]
 # Defaults: owner=sudarshan81026 repo=AI-Recommendation-System-java
 
-OWNER=${1:-sudarshan81026}
+OWNER=${1:-Rv9835}
 REPO=${2:-AI-Recommendation-System-java}
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
