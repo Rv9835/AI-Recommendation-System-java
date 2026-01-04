@@ -1,0 +1,49 @@
+{
+  "info": {
+    "name": "AI Recommendation API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Signup",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"user_id\":\"test_user\",\"password\":\"pass123\",\"first_name\":\"T\",\"last_name\":\"User\"}" },
+        "url": { "raw": "{{baseUrl}}/signup", "host": ["{{baseUrl}}"], "path": ["signup"] }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"user_id\":\"test_user\",\"password\":\"pass123\"}" },
+        "url": { "raw": "{{baseUrl}}/login", "host": ["{{baseUrl}}"], "path": ["login"] }
+      }
+    },
+    {
+      "name": "Add Favorite",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-XSRF-TOKEN", "value": "{{xsrf}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"favorite\":[\"item123\"]}" },
+        "url": { "raw": "{{baseUrl}}/history", "host": ["{{baseUrl}}"], "path": ["history"] }
+      }
+    },
+    {
+      "name": "Get Favorites",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/history", "host": ["{{baseUrl}}"], "path": ["history"] }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8080" },
+    { "key": "xsrf", "value": "" }
+  ]
+}
