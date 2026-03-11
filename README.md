@@ -11,7 +11,7 @@ This project is a Java Servlet backend for a personalized recommendation service
 ## Environment & Configuration
 Set these environment variables (or configure via your CI):
 
-- `DB_URL` (default: `jdbc:mysql://localhost:3306/?user=root`)
+- `DB_URL` (default: `jdbc:mysql://localhost:3306/?user=root`).
 - `DB_USER` (default: `root`)
 - `DB_PASSWORD` (default: empty — set via environment or CI secrets)
 
