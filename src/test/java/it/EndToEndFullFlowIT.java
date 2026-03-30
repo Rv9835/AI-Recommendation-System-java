@@ -69,7 +69,7 @@ public class EndToEndFullFlowIT {
         int sc2 = postJsonWithHeaderStatus("http://127.0.0.1:" + port + "/history", favPayload, null);
         assertEquals(200, sc2);
 
-        // remove favorite
+        // remove fav
         String remPayload = "{\"favorite\":[\"item-e2e-full\"]}";
         int sc3 = deleteJsonWithHeaderStatus("http://127.0.0.1:" + port + "/history", remPayload, null);
         assertEquals(200, sc3);
