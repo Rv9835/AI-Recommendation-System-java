@@ -288,7 +288,7 @@ mvn flyway:migrate
 
 ### Tips for graders
 - The project includes unit, integration, and E2E tests under `src/test/java`.
-- To run only DB-related tests with H2, ensure tests call `DBConnectionFactory.setDataSourceForTests` (the H2 example test is `src/test/java/db/mysql/MySQLConnectionH2Test.java`).
+- To run only DB-related tests with H2, ensure tests call `DBConnectionFactory.setDataSourceForTests` (the H2 example test is `src/test/java/db/mysql/MySQLConnectionH2Test.java`)
 
 ### Files of interest
 - `src/main/java/db/mysql/MySQLConnection.java`
